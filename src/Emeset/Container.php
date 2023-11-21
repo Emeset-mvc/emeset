@@ -61,6 +61,23 @@ class Container extends PimpleContainer implements ContainerInterface
         $this["caller"] = function ($c) {
             return new \Emeset\Caller($c);
         };
+
+        $this["cli"] = function ($c) {
+            return new \Emeset\Cli\Cli($argv, $c["cli.parser"], $c["cli.output"], $c["caller"], $c);
+        };
+
+        $this["cli.parser"] = function ($c) {
+            return new \Emeset\Cli\Parser($argv, $c["cli.garden"]);
+        };
+
+        $this["cli.output"] = function ($c) {
+            return new \Emeset\Cli\Output($c["cli.garden"]);
+        };
+
+        $this["cli.garden"] = function ($c) {
+            return new \Garden\Cli\Cli();
+        };
+
     }
 
     /**
