@@ -138,4 +138,17 @@ class Request implements RequestInterface
         }
         return $result;
     }
+
+    /**
+     * isAjax:  retorna true si la petició és AJAX i false si no.
+     *
+     * return boolean
+     * 
+     * Mateo Cerna
+     **/
+    public function isAjax()
+    {
+        //Comprovem si la petició és AJAX mirant la capçalera HTTP_X_REQUESTED_WITH i si el seu valor és xmlhttprequest
+        return !empty($this->has(INPUT_SERVER, 'HTTP_X_REQUESTED_WITH')) && strtolower($this->get(INPUT_SERVER, 'HTTP_X_REQUESTED_WITH')) == 'xmlhttprequest';
+    }
 }

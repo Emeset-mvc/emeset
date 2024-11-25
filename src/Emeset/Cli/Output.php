@@ -7,6 +7,7 @@ use League\CLImate\CLImate;
 class Output implements \Emeset\Contracts\Cli\Output {
     
         public ClImate $cli;
+        public $progress;
     
         public function __construct(Climate $cli) {
             $this->cli = $cli;
@@ -71,12 +72,12 @@ class Output implements \Emeset\Contracts\Cli\Output {
         }
 
         public function progress(int $total, string $message) {
-            $this->cli->progress()->total($total);
+            $this->progress = $this->cli->progress()->total($total);
             return $this;
         }
 
         public function progressAdvance(int $advance,  string $message = "") {
-            $this->cli->progress()->advance($advance, $message);
+            $this->progress->advance($advance, $message);
             return $this;
         }
 
