@@ -29,7 +29,7 @@ class Cli {
     public function run() {
         $this->args = $this->cli->parse();
         $call = $this->caller->resolve($this->actions[$this->args->getCommand()]);
-        $call($this->args, $this->output, $this->container);
+        $call($this->args->getArgs(), $this->output, $this->container);
     }
 
 }
