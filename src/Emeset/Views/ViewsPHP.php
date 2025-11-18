@@ -92,4 +92,14 @@ class ViewsPHP implements Views
         extract($this->values);
         include($this->path . $this->template);
     }
+
+    public function getValues(): array
+    {
+        return $this->values;
+    }
+
+    public function getTemplate(): string
+    {
+        return $this->template;
+    }
 }

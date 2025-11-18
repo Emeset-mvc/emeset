@@ -73,10 +73,22 @@ class Emeset
     {
         $this->frontController->head($id, $callback, $middleware);
     }
-    public function execute()
+
+    public function handle(): \Emeset\Contracts\Http\Response
     {
         $this->middleware[] = [$this->frontController, "execute"];
-        $response = Middleware::next($this->request, $this->response, $this->contenidor, $this->middleware);
+        $response = Middleware::next(
+            $this->request,
+            $this->response,
+            $this->contenidor,
+            $this->middleware
+        );
+
+        return $response;
+    }
+    public function execute()
+    {
+        $response = $this->handle();
         $response->response();
     }
 }

@@ -151,6 +151,33 @@ class Response implements ResponseInterface
     }
 
     /**
+     * render crea la resposta com string i la retorna
+     *
+     *  @param string $body  Contingut de la resposta HTTP
+     *
+     * @return void
+     */
+    public function render(): string
+    {
+        // Redireccions normalment no tenen cos
+        if ($this->redirect) {
+            return '';
+        }
+
+        if ($this->body !== '') {
+            return $this->body;
+        }
+
+        if ($this->view->hasTemplate()) {
+            ob_start();
+            $this->view->show();
+            return ob_get_clean();
+        }
+
+        return $this->view->getJson();
+    }
+
+    /**
      * Genera la response HTTP
      *
      * @return void
@@ -163,14 +190,58 @@ class Response implements ResponseInterface
             if ($this->header !== false) {
                 header($this->header);
             }
-            if ($this->view->hasTemplate()) {
-                $this->view->show();
-            } elseif ($this->body != "") {
-                echo $this->body;
-            } else {
-                header('Content-Type: application/json');
-                echo $this->view->getJson();
-            }
+
+            echo $this->render();
         }
+    }
+
+    /**
+     * Obté el headers
+     *
+     * @return string|false
+     */
+    public function getHeader(): string|false
+    {
+        return $this->header;
+    }
+
+    /**
+     * Obté si és una redirecció
+     *
+     * @return string|false
+     */
+    public function isRedirect(): bool
+    {
+        return $this->redirect;
+    }
+
+    /**
+     * Obté si és JSON
+     *
+     * @return string|false
+     */
+    public function isJson(): bool
+    {
+        return $this->json;
+    }
+
+    /**
+     * Obté si la resposta directa
+     *
+     * @return string|false
+     */
+    public function getBody(): string
+    {
+        return $this->body;
+    }
+
+    /**
+     * Obté si la vista
+     *
+     * @return string|false
+     */
+    public function getView(): \Emeset\Contracts\Views\Views
+    {
+        return $this->view;
     }
 }
