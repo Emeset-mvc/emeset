@@ -24,16 +24,42 @@ class Container extends PimpleContainer implements ContainerInterface
      * __construct:  Defineix les dependències del projecte Emeset
      *
      * @param $config array amb la configuració del projecte.
+     * @param $projectRootPath permet definir el path del projecte
      **/
-    public function __construct($config)
+    public function __construct($config, ?string $projectRootPath = null)
     {
-        $projectRootPath = dirname(getcwd());
-        $dotenv = Dotenv::createImmutable($projectRootPath);
+        if ($projectRootPath === null) {
+            $isCLI = (php_sapi_name() === 'cli');
+
+            // En CLI (phpunit, comandes) volem que l’arrel sigui el cwd
+            if ($isCLI) {
+                $projectRootPath = getcwd();
+            } else {
+                // En entorn web continua funcionant com fins ara
+                $projectRootPath = dirname(getcwd());
+            }
+        }
+
+        $isTest = defined('PHPUNIT_COMPOSER_INSTALL') || defined('__PHPUNIT_BOOTSTRAP')
+            || getenv('PHPUNIT_RUNNING') === '1';
+
+
+        $envFile = $isTest ? '.env.test' : '.env';
+
+        // Si estem en test però no existeix .env.test → fallback a .env
+        if (!file_exists($projectRootPath . '/' . $envFile)) {
+            $envFile = '.env';
+        }
+
+        $dotenv = Dotenv::createImmutable($projectRootPath, $envFile);
         $dotenv->safeLoad();
 
+        // 3. Carregar config (igual que abans)
         if (is_string($config)) {
             $config = require $config;
         }
+
+        parent::__construct($config);
 
         $this["config"] = $config;
 
@@ -81,7 +107,6 @@ class Container extends PimpleContainer implements ContainerInterface
         $this["cli.Climate"] = function ($c) {
             return new \League\CLImate\CLImate();
         };
-
     }
 
     /**
