@@ -94,9 +94,11 @@ interface Response
     /**
      * setJson força que la response sigui en format json.
      *
+     *  @param Array $params paràmetres que volem retornar en JSON
+     * 
      * @return void
      */
-    public function setJSON();
+    public function setJSON(Array $params);
 
 
     /**

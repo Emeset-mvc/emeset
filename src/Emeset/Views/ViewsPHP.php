@@ -10,6 +10,7 @@
  **/
 
 namespace Emeset\Views;
+
 use Emeset\Contracts\Views\Views;
 
 /**
@@ -72,14 +73,20 @@ class ViewsPHP implements Views
     }
 
     /**
-     * hasTemplate.
+     * getJson
      *
+     * @param Array $params paràmetres que volem retornar en el JSON
      * 
      * @return boolean
      */
-    public function getJson()
+    public function getJson(array $params)
     {
-        return json_encode($this->values);
+        $values = $this->values;
+        if (!(count($params) === 1 && $params[0] === "*")) {
+            $keysToKeep = array_flip($params);
+            $values = array_intersect_key($values, $keysToKeep);
+        }
+        return json_encode($values);
     }
 
     /**

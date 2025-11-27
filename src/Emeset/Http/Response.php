@@ -27,6 +27,7 @@ class Response implements ResponseInterface
     public $header = false;
     public $redirect = false;
     public $json = false;
+    public $jsonParams = ["*"];
     public $body = "";
     public $view;
 
@@ -131,10 +132,13 @@ class Response implements ResponseInterface
     /**
      * setJson força que la response sigui en format json.
      *
+     *  @param Array $params paràmetres que volem retornar en JSON
+     * 
      * @return void
      */
-    public function setJSON()
+    public function setJSON($params = ["*"])
     {
+        $this->jsonParams = $params;
         $this->json = true;
     }
 
@@ -174,7 +178,7 @@ class Response implements ResponseInterface
             return ob_get_clean();
         }
 
-        return $this->view->getJson();
+        return $this->view->getJson($this->jsonParams);
     }
 
     /**
