@@ -57,10 +57,11 @@ interface Views
     public function hasTemplate();
 
     /**
-     * hasTemplate.
+     * getJson
      *
+     * @param Array $params paràmetres que volem retornar en el JSON
      * 
      * @return boolean
      */
-    public function getJson();
+    public function getJson(array $params);
 }

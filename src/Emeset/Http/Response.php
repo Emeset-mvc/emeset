@@ -136,7 +136,7 @@ class Response implements ResponseInterface
      * 
      * @return void
      */
-    public function setJSON($params = ["*"])
+    public function setJSON(array $params = ["*"])
     {
         $this->jsonParams = $params;
         $this->json = true;

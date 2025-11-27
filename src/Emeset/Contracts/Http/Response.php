@@ -98,7 +98,7 @@ interface Response
      * 
      * @return void
      */
-    public function setJSON(Array $params);
+    public function setJSON(array $params);
 
 
     /**
