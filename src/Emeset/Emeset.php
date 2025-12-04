@@ -37,6 +37,10 @@ class Emeset
     {
         $this->contenidor = $contenidor;
 
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
         $this->response = $contenidor["response"];
         $this->request = $contenidor["request"];
         $this->frontController = $contenidor["FrontController"];
