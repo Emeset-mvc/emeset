@@ -22,6 +22,10 @@ use Emeset\Contracts\Http\Request as RequestInterface;
 class Request implements RequestInterface
 {
     public $params = [];
+    private bool $testing = false;
+    private $fakeGET = [];
+    private $fakePOST = [];
+    private $fakeSESSION = [];
 
     /**
      * __construct:  Crear el petició http
@@ -42,6 +46,11 @@ class Request implements RequestInterface
     public function get($input, $id, $filter = "FILTER_SANITIZE_STRING", $options = 0)
     {
         $result = false;
+        if ($this->testing) {
+            if ($input === INPUT_POST) return $this->fakePOST[$id] ?? null;
+            if ($input === INPUT_GET) return $this->fakeGET[$id] ?? null;
+            if ($input === 'SESSION') return $this->fakeSESSION[$id] ?? null;
+        }
         if ($input === 'SESSION') {
             $result = null;
             if (isset($_SESSION[$id])) {
@@ -51,7 +60,7 @@ class Request implements RequestInterface
             $result = null;
             if (isset($_FILES[$id])) {
                 $result = $_FILES[$id];
-            }            
+            }
         } elseif ($input === "INPUT_REQUEST") {
             $result = null;
             if (isset($_REQUEST[$id])) {
@@ -137,6 +146,17 @@ class Request implements RequestInterface
             $result = !is_null(filter_input($input, $id, FILTER_DEFAULT));
         }
         return $result;
+    }
+
+    public static function fake(array $get = [], array $post = [], array $session = [], array $params = []): self
+    {
+        $r = new self();
+        $r->testing = true;
+        $r->fakeGET = $get;
+        $r->fakePOST = $post;
+        $r->fakeSESSION = $session;
+        $r->params = $params;
+        return $r;
     }
 
     /**
