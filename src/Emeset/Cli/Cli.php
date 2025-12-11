@@ -12,7 +12,7 @@ class Cli {
     public Container $container;
 
     public array $actions = [];
-    public \Garden\Cli\Args $args;  //Must be encapsulated in a class to hide the implementation details
+    public \Emeset\Cli\Parser $args;  //Must be encapsulated in a class to hide the implementation details
 
     public function __construct(Parser $cli, Output $output, \Emeset\Caller $caller, Container $container) {
         $this->cli = $cli;
@@ -22,14 +22,14 @@ class Cli {
     }
 
     public function addCommand(string $command,  $action, string $description = "") {
-        $this->cli->command($command)->description($description);
         $this->actions[$command] = $action;
+        return $this->cli->command($command)->description($description);
     }
 
     public function run() {
         $this->args = $this->cli->parse();
         $call = $this->caller->resolve($this->actions[$this->args->getCommand()]);
-        $call($this->args->getArgs(), $this->output, $this->container);
+        $call($this->args, $this->output, $this->container);
     }
 
 }

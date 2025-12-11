@@ -26,6 +26,9 @@ class Request implements RequestInterface
     private $fakeGET = [];
     private $fakePOST = [];
     private $fakeSESSION = [];
+    private array $fakeSERVER = [];
+    private array $fakeFILES = [];
+
 
     /**
      * __construct:  Crear el petició http
@@ -50,6 +53,8 @@ class Request implements RequestInterface
             if ($input === INPUT_POST) return $this->fakePOST[$id] ?? null;
             if ($input === INPUT_GET) return $this->fakeGET[$id] ?? null;
             if ($input === 'SESSION') return $this->fakeSESSION[$id] ?? null;
+            if ($input === INPUT_SERVER) return $this->fakeSERVER[$id] ?? null;
+            if ($input === 'FILES')     return $this->fakeFILES[$id] ?? null;
         }
         if ($input === 'SESSION') {
             $result = null;
@@ -65,7 +70,11 @@ class Request implements RequestInterface
             $result = null;
             if (isset($_REQUEST[$id])) {
                 $var = $_REQUEST[$id];
-                $result = filter_var($var, $filter, $options);
+                 if ($filter == "FILTER_SANITIZE_STRING") {
+                    $result = htmlspecialchars($var);
+                } else {
+                    $result = filter_var($var, $filter, $options);
+                }
             }
         } elseif ($input === INPUT_SERVER) {
             $result = null;
@@ -148,7 +157,7 @@ class Request implements RequestInterface
         return $result;
     }
 
-    public static function fake(array $get = [], array $post = [], array $session = [], array $params = []): self
+    public static function fake(array $get = [], array $post = [], array $session = [], array $params = [], array $server = [], array $files = []): self
     {
         $r = new self();
         $r->testing = true;
@@ -156,6 +165,8 @@ class Request implements RequestInterface
         $r->fakePOST = $post;
         $r->fakeSESSION = $session;
         $r->params = $params;
+        $r->fakeSERVER = $server;
+        $r->fakeFILES = $files;
         return $r;
     }
 

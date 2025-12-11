@@ -25,5 +25,8 @@
     },
     "autoload": {
         "psr-4": {"Emeset\\": "src/Emeset"}
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.5"
     }
 }

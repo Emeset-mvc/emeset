@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="tests/bootstrap.php" colors="true" beStrictAboutTestsThatDoNotTestAnything="false" beStrictAboutOutputDuringTests="true" cacheDirectory=".phpunit.cache">
+  <testsuites>
+    <testsuite name="Emeset Test Suite">
+      <directory>tests</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <!-- Per si vols forçar el comportament de test al Container -->
+    <env name="PHPUNIT_RUNNING" value="1"/>
+  </php>
+</phpunit>
