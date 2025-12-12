@@ -59,6 +59,14 @@ interface Request
      */
     public function getParam($param);
 
+    /**
+     * hasParam valida el paràmetre $param de la ruta.
+     * 
+     * @param string $param paràmetre a recuperar.
+     * 
+     * @return string
+     */
+    public function hasParam($param);
 
     /**
      * has:  retorna true si l'entrada especificada existeix i false si no.
