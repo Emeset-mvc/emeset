@@ -1,31 +1,29 @@
 <?php
 /**
- * MysqlLogger Class for direct database logging without Monolog.
+ * FileLogger Class for file-based logging.
  *
  * @author Eduard Martínez eduard.martinez.teixidor@gmail.com
  *
- * Manages writing logs directly to MySQL database without external dependencies.
+ * Manages the writing of logs to text files organized by day.
  **/
 
 namespace Emeset\Logs;
-use PDO;
-use PDOStatement;
 
 
-class MysqlLogger
+class FileLogger
 {
     private bool $initialized = false;
-    private PDO $pdo;
-    private PDOStatement $statement;
     private $user;
+    private string $logDir;
+    private string $logFile;
 
-    public function __construct(PDO $pdo, $user)
+    public function __construct($logDir, $user)
     {
-        $this->pdo = $pdo;
+        $this->logDir = $logDir;
         $this->user = $user;
     }
     /**
-     * Does the log writing in the database
+     * Does the log writing to file
      * 
      * User is passed from Log.php
      * 
@@ -39,25 +37,28 @@ class MysqlLogger
         if (!$this->initialized) {
             $this->initialize();
         }
-        $this->statement->execute(array(
-            'channel' => $context,
-            'level' => $level,
-            'message' => $message,
-            'user' => $this->user,
-        ));
+        $timestamp = date('Y-m-d H:i:s');
+        $logEntry = $timestamp . " | - | " . $context . " | - | " . $this->user . " | - | " . $level . " | - | " . $message . "\n";
+        file_put_contents($this->logFile, $logEntry, FILE_APPEND);
+        print_r("Log written to file: " . $this->logFile . "\n");
     }
     /**
-     * Sets up table if not created and prepares query
+     * Sets up Log folder and creates daily log file if not exists
+     * 
      * @return void
      */
     private function initialize()
-    {
-        $this->pdo->exec(
-            'CREATE TABLE IF NOT EXISTS logs (id INT NOT NULL auto_increment primary key, channel VARCHAR(255), user varchar(250), level INTEGER, message LONGTEXT, time DATETIME DEFAULT CURRENT_TIMESTAMP())'
-        );
-        $this->statement = $this->pdo->prepare(
-            "INSERT INTO logs (channel, user, level, message, time) VALUES (:channel, :user, :level, :message, CURRENT_TIMESTAMP())"
-        );
+    {        
+        if (!is_dir($this->logDir)) {
+            mkdir($this->logDir, 0777, true);
+        }
+        
+        $today = date('d-m-Y');
+        $this->logFile = $this->logDir . DIRECTORY_SEPARATOR . $today . '.log';
+
+        if (!file_exists($this->logFile)) {
+            touch($this->logFile);
+        }
 
         $this->initialized = true;
     }
@@ -75,7 +76,7 @@ class MysqlLogger
         if ($level != 'info' && $level != 'notice' && $level != 'warning' && $level != 'error' && $level != 'critical' && $level != 'alert' && $level != 'emergency'){
             $level = 'info';
         }
+        print_r("Logging with level: " . $level . "\n");
         $this->write($context, $message, $level);
     }
-
 }

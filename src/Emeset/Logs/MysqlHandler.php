@@ -1,6 +1,13 @@
 <?php
+/**
+ * MysqlHandler Class for Monolog-based database logging.
+ *
+ * @author Eduard Martínez eduard.martinez.teixidor@gmail.com
+ *
+ * Handler for Monolog that persists log records to MySQL database.
+ **/
 
-namespace App\Logs;
+namespace Emeset\Logs;
 use Monolog\Level;
 use Monolog\Logger;
 use Monolog\LogRecord;
@@ -14,37 +21,34 @@ class MysqlHandler extends AbstractProcessingHandler
     private bool $initialized = false;
     private PDO $pdo;
     private PDOStatement $statement;
-    private $cron;
+    private $user;
 
-    public function __construct(PDO $pdo, $cron, int|string|Level $level = Level::Debug, bool $bubble = true)
+    public function __construct(PDO $pdo, $user, int|string|Level $level = Level::Debug, bool $bubble = true)
     {
         $this->pdo = $pdo;
         parent::__construct($level, $bubble);
-        $this->cron = $cron;
+        $this->user = $user;
     }
-
+    /**
+     * User is passed from Log.php
+     * 
+     * Record has the following properties: channel, level, message, context, datetime, extra.
+     * 
+     * We only use channel, level and message here.
+     * 
+     * @param LogRecord $record
+     * @return void
+     */
     protected function write(LogRecord $record): void
     {
         if (!$this->initialized) {
             $this->initialize();
         }
-        if ($this->cron) {
-            $user = 'cron';
-        } else {
-            $userSession = \Emeset\Env::get("session_user" , null);
-            $userRole = \Emeset\Env::get("session_userRole" , null);
-            $userNick = \Emeset\Env::get("session_userNickname" , null);
-            if ($userSession != null && $userRole != null && $userNick != null) {
-                if (isset($_SESSION[$userSession][$userRole])) {
-                    $user = $_SESSION[$userSession][$userRole] === 'admin' ? $_SESSION[$userSession][$userNick] : 'user';
-                }
-            }
-        }
         $this->statement->execute(array(
             'channel' => $record->channel,
             'level' => $record->level->value,
             'message' => $record->message,
-            'user' => $user,
+            'user' => $this->user,
         ));
     }
 
