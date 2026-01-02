@@ -107,6 +107,11 @@ class Container extends PimpleContainer implements ContainerInterface
         $this["cli.Climate"] = function ($c) {
             return new \League\CLImate\CLImate();
         };
+
+        $this["log"] = function ($c) {
+            $db = $c->has("Db") ? $c->get("Db")->getDb() : null;
+            return new \Emeset\Logs\Log($db);
+        };
     }
 
     /**
