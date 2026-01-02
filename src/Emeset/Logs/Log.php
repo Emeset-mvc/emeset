@@ -40,7 +40,7 @@ class Log{
     public function __construct($db, $monolog = null) {
         $this->db = $db;
         $this->monolog = $monolog === null ? $this->checkMonologFlag() : $monolog;
-        $this->logDir = $this->detectProjectRoot() . DIRECTORY_SEPARATOR . 'Log';
+        $this->logDir = $this->detectProjectRoot() . DIRECTORY_SEPARATOR . 'Logs';
     }
 
  /**
