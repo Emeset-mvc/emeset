@@ -9,8 +9,9 @@
  * - MySQL database logging
  * - File-based logging
  *
- * The logger automatically detects Monolog availability from composer.json and caches
- * the result in the .env file as LOG_USE_MONOLOG for performance optimization.
+ * The logger automatically detects Monolog availability from composer.json on the first
+ * instantiation and caches the result in memory for the server lifecycle. On server restart,
+ * fresh detection occurs ensuring accurate dependency status.
  *
  * @package Emeset\Logs
  * @version 1.0
@@ -216,15 +217,13 @@ class Log{
     }
 
     /**
-     * Determines Monolog library availability with caching and persistence.
+     * Determines Monolog library availability with in-memory caching.
      *
-     * Resolution order:
-     * 1. Checks static cache (per-process)
-     * 2. Checks .env file for LOG_USE_MONOLOG setting
-     * 3. Scans composer.json for monolog/monolog dependency
-     * 4. Persists result to .env file for future checks
+     * On the first Log instantiation, scans composer.json to detect Monolog availability.
+     * The result is cached in the static property for the server lifecycle.
+     * Subsequent Log instances reuse the cached value, avoiding redundant file Input/Output.
      *
-     * This optimization prevents redundant file/directory scans after the first check.
+     * On server restart, the cache is automatically cleared and detection runs fresh.
      *
      * @return bool True if Monolog is available and should be used
      */
@@ -233,16 +232,8 @@ class Log{
             return self::$cachedMonolog;
         }
 
-        // Try to read from .env first
-        $envValue = \Emeset\Env::get("LOG_USE_MONOLOG", null);
-        if ($envValue !== null) {
-            self::$cachedMonolog = ($envValue === 'true' || $envValue === true);
-            return self::$cachedMonolog;
-        }
-
-        // Not in .env, check composer.json and persist
+        // Check composer.json and cache in memory for server lifetime
         $detected = $this->detectMonologInComposer();
-        $this->persistEnvFlag($detected);
         self::$cachedMonolog = $detected;
         return self::$cachedMonolog;
     }
@@ -267,39 +258,5 @@ class Log{
         }
         $deps = array_merge($json['require'] ?? [], $json['require-dev'] ?? []);
         return isset($deps['monolog/monolog']);
-    }
-
-    /**
-     * Persists the Monolog availability flag to the .env file.
-     *
-     * Writes or updates the LOG_USE_MONOLOG setting in the .env file. Only writes
-     * if the value has changed to minimize file I/O. Creates the .env file if it
-     * doesn't exist.
-     *
-     * @param bool $value True to enable Monolog, false to disable
-     *
-     * @return void
-     */
-    private function persistEnvFlag(bool $value): void {
-        $root = $this->detectProjectRoot();
-        $envPath = $root . DIRECTORY_SEPARATOR . '.env';
-        $lines = file_exists($envPath)
-            ? file($envPath, FILE_IGNORE_NEW_LINES)
-            : [];
-        
-        // Check if the correct value already exists
-        $expectedLine = 'LOG_USE_MONOLOG = ' . ($value ? 'true' : 'false');
-        foreach ($lines as $line) {
-            if (trim($line) === $expectedLine) {
-                return; // Already correct, no need to write
-            }
-        }
-        
-        // Remove old LOG_USE_MONOLOG lines and add new one
-        $filtered = array_values(array_filter($lines, function ($line) {
-            return strpos($line, 'LOG_USE_MONOLOG=') !== 0 && strpos($line, 'LOG_USE_MONOLOG =') !== 0;
-        }));
-        $filtered[] = $expectedLine;
-        file_put_contents($envPath, implode(PHP_EOL, $filtered) . PHP_EOL);
     }
 }
