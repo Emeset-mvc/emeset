@@ -22,7 +22,7 @@ final class RouterParamTest extends TestCase
         $container = $this->createContainer();
         $router = new RouterParam($container, []);
 
-        $router->route('', function ($req, $res) {
+        $router->route('', function (\Emeset\Contracts\Http\Request $req, \Emeset\Contracts\Http\Response $res): \Emeset\Contracts\Http\Response {
             $res->setBody('default');
             return $res;
         });
@@ -40,7 +40,7 @@ final class RouterParamTest extends TestCase
         $container = $this->createContainer();
         $router = new RouterParam($container, []);
 
-        $router->route('home', function ($req, $res) {
+        $router->route('home', function (\Emeset\Contracts\Http\Request $req, \Emeset\Contracts\Http\Response $res): \Emeset\Contracts\Http\Response {
             $res->setBody('home');
             return $res;
         });

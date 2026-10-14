@@ -17,7 +17,7 @@ class Middleware implements MiddlewareInterface
      * @param $next
      * @return mixed
      */
-    public static function next(Request $request, Response $response, Container $container, $next)
+    public static function next(Request $request, Response $response, Container $container, mixed $next): Response
     {
         if (is_array($next)) {
             if (count($next) > 1) {

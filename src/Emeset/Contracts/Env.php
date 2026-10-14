@@ -10,5 +10,5 @@ interface Env
      * @param mixed $default valor per defecte si no existeix la variable
      * @return mixed
      */
-    static public function get(string $key, $default = null);
+    public static function get(string $key, mixed $default = null): mixed;
 }

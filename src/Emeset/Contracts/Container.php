@@ -27,7 +27,7 @@ interface Container
      *
      * @throws \Exception      when identifier not found   
      */
-    public function get($id);
+    public function get(string $id): mixed;
 
 
     /**
@@ -38,5 +38,5 @@ interface Container
      *
      * @return boolean
      */
-    public function has($id);
+    public function has(string $id): bool;
 }

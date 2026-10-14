@@ -23,15 +23,16 @@ use Emeset\Contracts\Views\Views;
 class ViewsPHP implements Views
 {
 
-    public $values = [];
-    public $template = '';
+    /** @var array<string, mixed> */
+    public array $values = [];
+    public string $template = '';
 
     /**
      * __construct:  Té tota la informació per crear la response
      *
      * @param $path string path fins a la carpeta de plantilles.
      **/
-    public function __construct(public $path = "../App/Views/")
+    public function __construct(public string $path = "../App/Views/")
     {
     }
 
@@ -42,7 +43,7 @@ class ViewsPHP implements Views
      * @param $valor mixed filtre a desar
      *
      **/
-    public function set($id, $valor)
+    public function set(string $id, mixed $valor): void
     {
         $this->values[$id] = $valor;
     }
@@ -54,7 +55,7 @@ class ViewsPHP implements Views
      * @param string $p nom de la template
      * @return void
      */
-    public function setTemplate($p)
+    public function setTemplate(string $p): void
     {
         $this->template = $p;
     }
@@ -65,7 +66,7 @@ class ViewsPHP implements Views
      * 
      * @return boolean
      */
-    public function hasTemplate()
+    public function hasTemplate(): bool
     {
         return $this->template != '';
     }
@@ -77,7 +78,7 @@ class ViewsPHP implements Views
      * 
      * @return boolean
      */
-    public function getJson(array $params)
+    public function getJson(array $params): string|false
     {
         $values = $this->values;
         if (!(count($params) === 1 && $params[0] === "*")) {
@@ -92,7 +93,7 @@ class ViewsPHP implements Views
      *
      * @return void
      */
-    public function show()
+    public function show(): void
     {
         extract($this->values);
         include($this->path . $this->template);

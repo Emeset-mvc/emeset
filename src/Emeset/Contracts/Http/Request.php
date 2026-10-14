@@ -28,7 +28,7 @@ interface Request
      * @param $filtre  int filtre a aplicar
      * @param $options int opcions del filtre si volem un array FILTER_REQUIRE_ARRAY
      **/
-    public function get($input, $id, $filter = "FILTER_SANITIZE_STRING", $options = 0);
+    public function get(int|string $input, string $id, int|string $filter = "FILTER_SANITIZE_STRING", array|int $options = 0): mixed;
     
 
     /**
@@ -38,7 +38,7 @@ interface Request
      * @param $id      string amb la tasca.
      * @param $options int opcions del filtre si volem un array FILTER_REQUIRE_ARRAY
      **/
-    public function getRaw($input, $id, $options = 0);
+    public function getRaw(int|string $input, string $id, array|int $options = 0): mixed;
     
 
     /**
@@ -48,7 +48,7 @@ interface Request
      *
      * @return void
      */
-    public function setParams($params);
+    public function setParams(array $params): void;
 
     /**
      * getParam obté el paràmetre $param de la ruta.
@@ -57,7 +57,7 @@ interface Request
      *
      * @return string
      */
-    public function getParam($param);
+    public function getParam(string $param): mixed;
 
     /**
      * hasParam valida el paràmetre $param de la ruta.
@@ -66,7 +66,7 @@ interface Request
      * 
      * @return string
      */
-    public function hasParam($param);
+    public function hasParam(string $param): bool;
 
     /**
      * has:  retorna true si l'entrada especificada existeix i false si no.
@@ -75,6 +75,6 @@ interface Request
      * @param $id      string amb la tasca.
      * return boolean
      **/
-    public function has($input, $id);
+    public function has(int|string $input, string $id): bool;
     
 }

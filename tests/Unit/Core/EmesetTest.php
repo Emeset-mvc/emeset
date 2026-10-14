@@ -25,12 +25,12 @@ final class EmesetTest extends TestCase
         $container = new Container([], $projectRoot);
 
         // Substituïm el router per RouterParam (més fàcil de provar)
-        $container['router'] = (fn($c): \Emeset\Routers\RouterParam => new RouterParam($c, $c['config']));
+        $container['router'] = (fn(\Pimple\Container $c): \Emeset\Routers\RouterParam => new RouterParam($c, $c['config']));
 
         $app = new Emeset($container);
 
         // Ruta per defecte (quan r no ve informat)
-        $app->route('', function ($req, $res) {
+        $app->route('', function (\Emeset\Contracts\Http\Request $req, \Emeset\Contracts\Http\Response $res): \Emeset\Contracts\Http\Response {
             $res->setBody('ok');
             return $res;
         });

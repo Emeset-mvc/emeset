@@ -5,41 +5,41 @@ namespace Emeset;
 
 class FrontController {
 
-    public $router;
+    public \Emeset\Contracts\Routers\Router $router;
 
-    public function __construct(public $container)
+    public function __construct(public \Emeset\Contracts\Container $container)
     {
-        $this->router = $this->container["router"];
+        $this->router = $this->container->get("router");
     }
 
-    public function route($id, $callback, $middleware = false)
+    public function route(string|int $id, callable|array|string $callback, callable|array|string|false $middleware = false): void
     {
         $this->router->route($id, $callback, $middleware);
     }
 
-    public function get($id, $callback, $middleware = false)
+    public function get(string|int $id, callable|array|string $callback, callable|array|string|false $middleware = false): void
     {
         $this->router->get($id, $callback, $middleware);
     }
     
-    public function post($id, $callback, $middleware = false)
+    public function post(string|int $id, callable|array|string $callback, callable|array|string|false $middleware = false): void
     {
         $this->router->post($id, $callback, $middleware);
     }
-    public function put($id, $callback, $middleware = false)
+    public function put(string|int $id, callable|array|string $callback, callable|array|string|false $middleware = false): void
     {
         $this->router->put($id, $callback, $middleware);
     }
-    public function delete($id, $callback, $middleware = false)
+    public function delete(string|int $id, callable|array|string $callback, callable|array|string|false $middleware = false): void
     {
         $this->router->delete($id, $callback, $middleware);
     }
-    public function head($id, $callback, $middleware = false)
+    public function head(string|int $id, callable|array|string $callback, callable|array|string|false $middleware = false): void
     {
         $this->router->head($id, $callback, $middleware);
     }
 
-    public function execute($request, $response, $container)
+    public function execute(\Emeset\Contracts\Http\Request $request, \Emeset\Contracts\Http\Response $response, \Emeset\Contracts\Container $container): \Emeset\Contracts\Http\Response
     {
         $response = $this->router->execute($request, $response);
         return $response;

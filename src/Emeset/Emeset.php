@@ -23,64 +23,61 @@ require_once __DIR__ . '/nextMiddleware.php';
 class Emeset
 {
 
-    public $contenidor;
-    public $config = [];
-    public $constructor;
-    public $response;
-    public $request;
+    public array $config = [];
+    public mixed $constructor;
+    public \Emeset\Contracts\Http\Response $response;
+    public \Emeset\Contracts\Http\Request $request;
 
-    public $frontController;
+    public FrontController $frontController;
 
-    public $middleware = [];
+    public array $middleware = [];
 
-    public function __construct(\Emeset\Contracts\Container $contenidor)
+    public function __construct(public \Emeset\Contracts\Container $contenidor)
     {
-        $this->contenidor = $contenidor;
-
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        $this->response = $contenidor["response"];
-        $this->request = $contenidor["request"];
-        $this->frontController = $contenidor["FrontController"];
+        $this->response = $this->contenidor->get("response");
+        $this->request = $this->contenidor->get("request");
+        $this->frontController = $this->contenidor->get("FrontController");
     }
 
-    public function middleware($callback)
+    public function middleware(callable|array|string $callback): void
     {
         $this->middleware[] = $callback;
     }
 
-    public function route($id, $callback, $middleware = false)
+    public function route(string|int $id, callable|array|string $callback, callable|array|string|false $middleware = false): void
     {
         $this->frontController->route($id, $callback, $middleware);
     }
 
-    public function get($id, $callback, $middleware = false)
+    public function get(string|int $id, callable|array|string $callback, callable|array|string|false $middleware = false): void
     {
         $this->frontController->get($id, $callback, $middleware);
     }
     
-    public function post($id, $callback, $middleware = false)
+    public function post(string|int $id, callable|array|string $callback, callable|array|string|false $middleware = false): void
     {
         $this->frontController->post($id, $callback, $middleware);
     }
-    public function put($id, $callback, $middleware = false)
+    public function put(string|int $id, callable|array|string $callback, callable|array|string|false $middleware = false): void
     {
         $this->frontController->put($id, $callback, $middleware);
     }
-    public function delete($id, $callback, $middleware = false)
+    public function delete(string|int $id, callable|array|string $callback, callable|array|string|false $middleware = false): void
     {
         $this->frontController->delete($id, $callback, $middleware);
     }
-    public function head($id, $callback, $middleware = false)
+    public function head(string|int $id, callable|array|string $callback, callable|array|string|false $middleware = false): void
     {
         $this->frontController->head($id, $callback, $middleware);
     }
 
     public function handle(): \Emeset\Contracts\Http\Response
     {
-        $this->middleware[] = [$this->frontController, "execute"];
+        $this->middleware[] = $this->frontController->execute(...);
         $response = Middleware::next(
             $this->request,
             $this->response,
@@ -90,7 +87,7 @@ class Emeset
 
         return $response;
     }
-    public function execute()
+    public function execute(): void
     {
         $response = $this->handle();
         $response->response();

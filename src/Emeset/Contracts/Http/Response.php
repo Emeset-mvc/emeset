@@ -27,7 +27,7 @@ interface Response
      * @param $id    string identificadro del valor que deem.
      * @param $value mixed valor a desar
      **/
-    public function set($id, $value);
+    public function set(string $id, mixed $value): void;
 
     /**
      * setSession guarda un valor a la sessió
@@ -36,7 +36,7 @@ interface Response
      * @param  mixed  $valor variable que volem desar
      * @return void
      */
-    public function setSession($id, $value);
+    public function setSession(string $id, mixed $value): void;
 
 
     /**
@@ -45,7 +45,7 @@ interface Response
      * @param $id
      * @return void
      */
-    public function unsetSession($id);
+    public function unsetSession(string $id): void;
 
 
     /**
@@ -62,7 +62,7 @@ interface Response
      * @param  boolean $httponly
      * @return void
      */
-    public function setCookie($name, $value = "", $expire = 0, $path = "", $domain = "", $secure = false, $httponly = false);
+    public function setCookie(string $name, string $value = "", int $expire = 0, string $path = "", string $domain = "", bool $secure = false, bool $httponly = false): void;
     
 
     /**
@@ -71,7 +71,7 @@ interface Response
      * @param  string $header capçalera http
      * @return void
      */
-    public function setHeader($header);
+    public function setHeader(string $header): void;
 
     /**
      * redirect.  Defineix la response com una redirecció. (accepta els mateixos paràmetres que header)
@@ -80,7 +80,7 @@ interface Response
      *                        redirecció
      * @return void
      */
-    public function redirect($header);
+    public function redirect(string $header): void;
 
     /**
      * setTemplate defineix quina template utilitzarem per la response.
@@ -88,7 +88,7 @@ interface Response
      * @param  string $p nom de la template
      * @return void
      */
-    public function setTemplate($p);
+    public function setTemplate(string $p): void;
 
 
     /**
@@ -98,7 +98,7 @@ interface Response
      * 
      * @return void
      */
-    public function setJSON(array $params);
+    public function setJSON(array $params = ["*"]): void;
 
 
     /**
@@ -108,7 +108,7 @@ interface Response
      *
      * @return void
      */
-    public function setBody($body);
+    public function setBody(string $body): void;
 
 
     /**
@@ -116,5 +116,5 @@ interface Response
      *
      * @return void
      */
-    public function response();
+    public function response(): void;
 }

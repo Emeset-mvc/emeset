@@ -23,22 +23,21 @@ use Emeset\Contracts\Views\Views;
 class Response implements ResponseInterface
 {
 
-    public $values = [];
-    public $header = false;
-    public $redirect = false;
-    public $json = false;
-    public $jsonParams = ["*"];
-    public $body = "";
-    public $view;
+    public array $values = [];
+    public string|false $header = false;
+    public bool $redirect = false;
+    public bool $json = false;
+    /** @var list<string> */
+    public array $jsonParams = ["*"];
+    public string $body = "";
 
     /**
      * __construct:  Té tota la informació per crear la response
      *
      * @param $path string path fins a la carpeta de plantilles.
      **/
-    public function __construct(Views $view)
+    public function __construct(public Views $view)
     {
-        $this->view = $view;
     }
 
     /**
@@ -47,7 +46,7 @@ class Response implements ResponseInterface
      * @param $id    string identificadro del valor que deem.
      * @param $value mixed valor a desar
      **/
-    public function set($id, $value)
+    public function set(string $id, mixed $value): void
     {
         $this->view->set($id, $value);
     }
@@ -59,7 +58,7 @@ class Response implements ResponseInterface
      * @param  mixed  $valor variable que volem desar
      * @return void
      */
-    public function setSession($id, $value)
+    public function setSession(string $id, mixed $value): void
     {
         $_SESSION[$id] = $value;
     }
@@ -70,7 +69,7 @@ class Response implements ResponseInterface
      * @param $id
      * @return void
      */
-    public function unsetSession($id)
+    public function unsetSession(string $id): void
     {
         unset($_SESSION[$id]);
     }
@@ -89,7 +88,7 @@ class Response implements ResponseInterface
      * @param  boolean $httponly
      * @return void
      */
-    public function setCookie($name, $value = "", $expire = 0, $path = "", $domain = "", $secure = false, $httponly = false)
+    public function setCookie(string $name, string $value = "", int $expire = 0, string $path = "", string $domain = "", bool $secure = false, bool $httponly = false): void
     {
         setcookie($name, $value, ['expires' => $expire, 'path' => $path, 'domain' => $domain, 'secure' => $secure, 'httponly' => $httponly]);
     }
@@ -100,7 +99,7 @@ class Response implements ResponseInterface
      * @param  string $header capçalera http
      * @return void
      */
-    public function setHeader($header)
+    public function setHeader(string $header): void
     {
         $this->header = $header;
     }
@@ -112,7 +111,7 @@ class Response implements ResponseInterface
      *                        redirecció
      * @return void
      */
-    public function redirect($header)
+    public function redirect(string $header): void
     {
         $this->setHeader($header);
         $this->redirect = true;
@@ -124,7 +123,7 @@ class Response implements ResponseInterface
      * @param  string $p nom de la template
      * @return void
      */
-    public function setTemplate($p)
+    public function setTemplate(string $p): void
     {
         $this->view->setTemplate($p);
     }
@@ -136,7 +135,7 @@ class Response implements ResponseInterface
      * 
      * @return void
      */
-    public function setJSON(array $params = ["*"])
+    public function setJSON(array $params = ["*"]): void
     {
         $this->jsonParams = $params;
         $this->json = true;
@@ -149,7 +148,7 @@ class Response implements ResponseInterface
      *
      * @return void
      */
-    public function setBody($body)
+    public function setBody(string $body): void
     {
         $this->body = $body;
     }
@@ -161,7 +160,7 @@ class Response implements ResponseInterface
      *
      * @return void
      */
-    public function render(): string
+    public function render(): string|false
     {
         // Redireccions normalment no tenen cos
         if ($this->redirect) {
@@ -186,7 +185,7 @@ class Response implements ResponseInterface
      *
      * @return void
      */
-    public function response()
+    public function response(): void
     {
         if ($this->redirect) {
             header($this->header);

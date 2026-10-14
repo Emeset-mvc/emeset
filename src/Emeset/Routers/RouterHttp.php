@@ -24,11 +24,12 @@ use Emeset\Middleware;
  **/
 class RouterHttp implements \Emeset\Contracts\Routers\Router
 {
-    public $routes = [];
-    public $router;
-    public $caller;
+    /** @var array<string, array<int|string, array{mixed, mixed}>> */
+    public array $routes = [];
+    public ?\FastRoute\Dispatcher $router = null;
+    public \Emeset\Caller $caller;
 
-    public function __construct(public $container, public $config)
+    public function __construct(public \Pimple\Container $container, public array $config)
     {
         $this->caller = $this->container["caller"];
     }
@@ -41,7 +42,7 @@ class RouterHttp implements \Emeset\Contracts\Routers\Router
      * @param callable $middleware
      * @return void
      */
-    public function route($id, $callback, $middleware = false)
+    public function route(string|int $id, mixed $callback, mixed $middleware = false): void
     {
         $this->get($id, $callback, $middleware);
         $this->post($id, $callback, $middleware); //routes[$id] = [$callback, $middleware];
@@ -55,7 +56,7 @@ class RouterHttp implements \Emeset\Contracts\Routers\Router
      * @param callable $middleware
      * @return void
      */
-    public function get($id, $callback, $middleware = false)
+    public function get(string|int $id, mixed $callback, mixed $middleware = false): void
     {
         $this->routes["GET"][$id] = [$callback, $middleware];
     }
@@ -68,7 +69,7 @@ class RouterHttp implements \Emeset\Contracts\Routers\Router
      * @param callable $middleware
      * @return void
      */
-    public function post($id, $callback, $middleware = false)
+    public function post(string|int $id, mixed $callback, mixed $middleware = false): void
     {
         $this->routes["POST"][$id] = [$callback, $middleware];
     }
@@ -81,7 +82,7 @@ class RouterHttp implements \Emeset\Contracts\Routers\Router
      * @param callable $middleware
      * @return void
      */
-    public function put($id, $callback, $middleware = false)
+    public function put(string|int $id, mixed $callback, mixed $middleware = false): void
     {
         $this->routes["PUT"][$id] = [$callback, $middleware];
     }
@@ -94,7 +95,7 @@ class RouterHttp implements \Emeset\Contracts\Routers\Router
      * @param callable $middleware
      * @return void
      */
-    public function delete($id, $callback, $middleware = false)
+    public function delete(string|int $id, mixed $callback, mixed $middleware = false): void
     {
         $this->routes["DELETE"][$id] = [$callback, $middleware];
     }
@@ -107,7 +108,7 @@ class RouterHttp implements \Emeset\Contracts\Routers\Router
      * @param callable $middleware
      * @return void
      */
-    public function head($id, $callback, $middleware = false)
+    public function head(string|int $id, mixed $callback, mixed $middleware = false): void
     {
         $this->routes["HEAD"][$id] = [$callback, $middleware];
     }
@@ -120,7 +121,7 @@ class RouterHttp implements \Emeset\Contracts\Routers\Router
      * @param callable $middleware
      * @return void
      */
-    public function options($id, $callback, $middleware = false)
+    public function options(string|int $id, mixed $callback, mixed $middleware = false): void
     {
         $this->routes["OPTIONS"][$id] = [$callback, $middleware];
     }
@@ -132,7 +133,7 @@ class RouterHttp implements \Emeset\Contracts\Routers\Router
      * @param Response $response
      * @return Response
      */
-    public function execute(Request $request,Response $response)
+    public function execute(Request $request, Response $response): Response
     {
         $dispatcher = \FastRoute\simpleDispatcher(function (\FastRoute\RouteCollector $r): void {
             foreach ($this->routes as $method => $routes) {
@@ -150,7 +151,7 @@ class RouterHttp implements \Emeset\Contracts\Routers\Router
         $uri = $request->get(INPUT_SERVER, 'REQUEST_URI');
 
         //esborrem les / al final per evitar problemes amb les routes
-        $uri = rtrim($uri, '/');
+        $uri = rtrim((string) $uri, '/');
         $uri = str_replace("index.php", "", $uri);
         // Strip query string (?foo=bar) and decode URI
         if (false !== $pos = strpos($uri, '?')) {

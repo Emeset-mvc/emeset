@@ -16,6 +16,6 @@ interface Middleware
      * @param $next
      * @return mixed
      */
-    public static function next(Request $request,Response $response, Container $container, $next);
+    public static function next(Request $request, Response $response, Container $container, mixed $next): Response;
     
 }

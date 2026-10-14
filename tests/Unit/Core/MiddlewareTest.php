@@ -16,7 +16,7 @@ final class MiddlewareTest extends TestCase
 
         $called = false;
 
-        $callable = function ($req, $res, $c) use (&$called) {
+        $callable = function (\Emeset\Contracts\Http\Request $req, \Emeset\Contracts\Http\Response $res, \Emeset\Contracts\Container $c) use (&$called): \Emeset\Contracts\Http\Response {
             $called = true;
             return $res;
         };
@@ -35,14 +35,14 @@ final class MiddlewareTest extends TestCase
 
         $log = [];
 
-        $mw1 = function ($req, $res, $c, $next) use (&$log) {
+        $mw1 = function (\Emeset\Contracts\Http\Request $req, \Emeset\Contracts\Http\Response $res, \Emeset\Contracts\Container $c, mixed $next) use (&$log): \Emeset\Contracts\Http\Response {
             $log[] = 'mw1-before';
             $res = \Emeset\Middleware::next($req, $res, $c, $next);
             $log[] = 'mw1-after';
             return $res;
         };
 
-        $controller = function ($req, $res, $c) use (&$log) {
+        $controller = function (\Emeset\Contracts\Http\Request $req, \Emeset\Contracts\Http\Response $res, \Emeset\Contracts\Container $c) use (&$log): \Emeset\Contracts\Http\Response {
             $log[] = 'controller';
             return $res;
         };

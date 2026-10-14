@@ -25,11 +25,12 @@ use Exception;
  **/
 class RouterParam implements \Emeset\Contracts\Routers\Router
 {
-    public $routes = [];
-    public $caller;
+    /** @var array<int|string, array{mixed, mixed}> */
+    public array $routes = [];
+    public \Emeset\Caller $caller;
 
 
-    public function __construct(public $container, public $config)
+    public function __construct(public \Pimple\Container $container, public array $config)
     {
         $this->caller = $this->container["caller"];
     }
@@ -42,7 +43,7 @@ class RouterParam implements \Emeset\Contracts\Routers\Router
      * @param callable $middleware
      * @return void
      */
-    public function route($id, $callback, $middleware = false)
+    public function route(string|int $id, mixed $callback, mixed $middleware = false): void
     {
         $this->routes[$id] = [$callback, $middleware];
     }
@@ -54,7 +55,7 @@ class RouterParam implements \Emeset\Contracts\Routers\Router
      * @param Response $response
      * @return Response
      */
-    public function execute(Request $request, Response $response)
+    public function execute(Request $request, Response $response): Response
     {
         $route = $request->get("INPUT_REQUEST", "r");
 
@@ -92,25 +93,25 @@ class RouterParam implements \Emeset\Contracts\Routers\Router
     }
 
 
-    public function get($id, $callback, $middleware = false)
+    public function get(string|int $id, mixed $callback, mixed $middleware = false): void
     {
         $this->route($id, $callback, $middleware);
     }
-    public function post($id, $callback, $middleware = false)
-    {
-        $this->route($id, $callback, $middleware);
-    }
-
-    public function put($id, $callback, $middleware = false)
-    {
-        $this->route($id, $callback, $middleware);
-    }
-    public function delete($id, $callback, $middleware = false)
+    public function post(string|int $id, mixed $callback, mixed $middleware = false): void
     {
         $this->route($id, $callback, $middleware);
     }
 
-    public function head($id, $callback, $middleware = false)
+    public function put(string|int $id, mixed $callback, mixed $middleware = false): void
+    {
+        $this->route($id, $callback, $middleware);
+    }
+    public function delete(string|int $id, mixed $callback, mixed $middleware = false): void
+    {
+        $this->route($id, $callback, $middleware);
+    }
+
+    public function head(string|int $id, mixed $callback, mixed $middleware = false): void
     {
         $this->route($id, $callback, $middleware);
     }

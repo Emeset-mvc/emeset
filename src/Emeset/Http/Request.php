@@ -21,11 +21,12 @@ use Emeset\Contracts\Http\Request as RequestInterface;
  **/
 class Request implements RequestInterface
 {
-    public $params = [];
+    /** @var array<string, mixed> */
+    public array $params = [];
     private bool $testing = false;
-    private $fakeGET = [];
-    private $fakePOST = [];
-    private $fakeSESSION = [];
+    private array $fakeGET = [];
+    private array $fakePOST = [];
+    private array $fakeSESSION = [];
     private array $fakeSERVER = [];
     private array $fakeFILES = [];
 
@@ -46,7 +47,7 @@ class Request implements RequestInterface
      * @param $filtre  int filtre a aplicar
      * @param $options int opcions del filtre si volem un array FILTER_REQUIRE_ARRAY
      **/
-    public function get($input, $id, $filter = "FILTER_SANITIZE_STRING", $options = 0)
+    public function get(int|string $input, string $id, int|string $filter = "FILTER_SANITIZE_STRING", array|int $options = 0): mixed
     {
         $result = false;
         if ($this->testing) {
@@ -71,7 +72,7 @@ class Request implements RequestInterface
             if (isset($_REQUEST[$id])) {
                 $var = $_REQUEST[$id];
                  if ($filter == "FILTER_SANITIZE_STRING") {
-                    $result = htmlspecialchars($var);
+                    $result = htmlspecialchars((string) $var);
                 } else {
                     $result = filter_var($var, $filter, $options);
                 }
@@ -81,14 +82,14 @@ class Request implements RequestInterface
             if (isset($_SERVER[$id])) {
                 $var = $_SERVER[$id];
                 if ($filter == "FILTER_SANITIZE_STRING") {
-                    $result = htmlspecialchars($var);
+                    $result = htmlspecialchars((string) $var);
                 } else {
                     $result = filter_var($var, $filter, $options);
                 }
             }
         } else {
             if ($filter == "FILTER_SANITIZE_STRING") {
-                $result = filter_input($input, $id, FILTER_DEFAULT, $options);
+                $result = filter_input($input, $id, FILTER_UNSAFE_RAW, $options);
                 if (isset($result)) {
                     $result = htmlspecialchars($result);
                 }
@@ -106,7 +107,7 @@ class Request implements RequestInterface
      * @param $id      string amb la tasca.
      * @param $options int opcions del filtre si volem un array FILTER_REQUIRE_ARRAY
      **/
-    public function getRaw($input, $id, $options = 0)
+    public function getRaw(int|string $input, string $id, array|int $options = 0): mixed
     {
         return $this->get($input, $id, FILTER_DEFAULT, $options);
     }
@@ -118,7 +119,7 @@ class Request implements RequestInterface
      *
      * @return void
      */
-    public function setParams($params)
+    public function setParams(array $params): void
     {
         $this->params = $params;
     }
@@ -130,7 +131,7 @@ class Request implements RequestInterface
      *
      * @return string
      */
-    public function getParam($param)
+    public function getParam(string $param): mixed
     {
         return $this->params[$param];
     }
@@ -142,7 +143,7 @@ class Request implements RequestInterface
      * 
      * @return string
      */
-    public function hasParam($param)
+    public function hasParam(string $param): bool
     {
         return isset($this->params[$param]);
     }
@@ -154,7 +155,7 @@ class Request implements RequestInterface
      * @param $id      string amb la tasca.
      * return boolean
      **/
-    public function has($input, $id)
+    public function has(int|string $input, string $id): bool
     {
         $result = false;
         if ($input === 'SESSION') {
@@ -189,9 +190,9 @@ class Request implements RequestInterface
      * 
      * Mateo Cerna
      **/
-    public function isAjax()
+    public function isAjax(): bool
     {
         //Comprovem si la petició és AJAX mirant la capçalera HTTP_X_REQUESTED_WITH i si el seu valor és xmlhttprequest
-        return !empty($this->has(INPUT_SERVER, 'HTTP_X_REQUESTED_WITH')) && strtolower($this->get(INPUT_SERVER, 'HTTP_X_REQUESTED_WITH')) == 'xmlhttprequest';
+        return !empty($this->has(INPUT_SERVER, 'HTTP_X_REQUESTED_WITH')) && strtolower((string) $this->get(INPUT_SERVER, 'HTTP_X_REQUESTED_WITH')) == 'xmlhttprequest';
     }
 }

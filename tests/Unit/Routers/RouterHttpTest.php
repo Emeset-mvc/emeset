@@ -17,12 +17,12 @@ final class RouterHttpTest extends TestCase
         $router = new RouterHttp($container, []);
 
         // Ruta per defecte per a 404 / mètodes no permesos
-        $router->get(0, function ($req, $res) {
+        $router->get(0, function (\Emeset\Contracts\Http\Request $req, \Emeset\Contracts\Http\Response $res): \Emeset\Contracts\Http\Response {
             $res->setBody('default');
             return $res;
         });
 
-        $router->get('/hello', function ($req, $res) {
+        $router->get('/hello', function (\Emeset\Contracts\Http\Request $req, \Emeset\Contracts\Http\Response $res): \Emeset\Contracts\Http\Response {
             $res->setBody('hello');
             return $res;
         });
@@ -49,7 +49,7 @@ final class RouterHttpTest extends TestCase
         $container = $this->createContainer();
         $router = new RouterHttp($container, []);
 
-        $router->get(0, function ($req, $res) {
+        $router->get(0, function (\Emeset\Contracts\Http\Request $req, \Emeset\Contracts\Http\Response $res): \Emeset\Contracts\Http\Response {
             $res->setBody('default');
             return $res;
         });

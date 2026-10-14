@@ -29,7 +29,7 @@ interface Views
      * @param $valor mixed filtre a desar
      *
      **/
-    public function set($id, $valor);
+    public function set(string $id, mixed $valor): void;
 
 
     /**
@@ -38,14 +38,14 @@ interface Views
      * @param string $p nom de la template
      * @return void
      */
-    public function setTemplate($p);
+    public function setTemplate(string $p): void;
 
     /**
      * Genera la response HTTP
      *
      * @return void
      */
-    public function show();
+    public function show(): void;
 
 
     /**
@@ -54,7 +54,7 @@ interface Views
      * 
      * @return boolean
      */
-    public function hasTemplate();
+    public function hasTemplate(): bool;
 
     /**
      * getJson
@@ -63,5 +63,5 @@ interface Views
      * 
      * @return boolean
      */
-    public function getJson(array $params);
+    public function getJson(array $params): string|false;
 }

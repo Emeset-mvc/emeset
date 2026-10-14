@@ -9,24 +9,24 @@ class Parser implements \Emeset\Contracts\Cli\Parser {
     {
     }
 
-    public function command($command, $description = ""){
+    public function command(string $command, string $description = ""): mixed {
         return $this->cli->command($command)->description($description);
     }
 
-    public function parse() {   
+    public function parse(): self {
         $this->args = $this->cli->parse($this->argv);
         return $this;
     }
 
-    public function getOpt($arg, $default = null) {
+    public function getOpt(string $arg, mixed $default = null): mixed {
         return $this->args->getOpt($arg, $default);
     }
 
-    public function getArgs() {
+    public function getArgs(): array {
         return $this->args->getArgs();
     }
 
-    public function getCommand() {
+    public function getCommand(): string {
         return $this->args->getCommand();
     }
 

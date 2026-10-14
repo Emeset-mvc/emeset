@@ -26,7 +26,7 @@ class Container extends PimpleContainer implements ContainerInterface
      * @param $config array amb la configuració del projecte.
      * @param $projectRootPath permet definir el path del projecte
      **/
-    public function __construct($config, ?string $projectRootPath = null)
+    public function __construct(array|string $config, ?string $projectRootPath = null)
     {
         if ($projectRootPath === null) {
             $isCLI = (php_sapi_name() === 'cli');
@@ -64,27 +64,27 @@ class Container extends PimpleContainer implements ContainerInterface
         $this["config"] = $config;
 
 
-        $this["request"] = (fn($c): \Emeset\Http\Request => new \Emeset\Http\Request());
+        $this["request"] = (fn(PimpleContainer $c): \Emeset\Http\Request => new \Emeset\Http\Request());
 
-        $this["view"] = (fn($c): \Emeset\Views\ViewsPHP => new \Emeset\Views\ViewsPHP());
+        $this["view"] = (fn(PimpleContainer $c): \Emeset\Views\ViewsPHP => new \Emeset\Views\ViewsPHP());
 
-        $this["response"] = (fn($c): \Emeset\Http\Response => new \Emeset\Http\Response($c["view"]));
+        $this["response"] = (fn(PimpleContainer $c): \Emeset\Http\Response => new \Emeset\Http\Response($c["view"]));
 
-        $this["router"] = (fn($c): \Emeset\Routers\RouterHttp => new \Emeset\Routers\RouterHttp($c, $c["config"]));
+        $this["router"] = (fn(PimpleContainer $c): \Emeset\Routers\RouterHttp => new \Emeset\Routers\RouterHttp($c, $c["config"]));
 
-        $this["FrontController"] = (fn($c): \Emeset\FrontController => new \Emeset\FrontController($c));
+        $this["FrontController"] = (fn(PimpleContainer $c): \Emeset\FrontController => new \Emeset\FrontController($c));
 
-        $this["caller"] = (fn($c): \Emeset\Caller => new \Emeset\Caller($c));
+        $this["caller"] = (fn(PimpleContainer $c): \Emeset\Caller => new \Emeset\Caller($c));
 
-        $this["cli"] = (fn($c): \Emeset\Cli\Cli => new \Emeset\Cli\Cli($c["cli.parser"], $c["cli.output"], $c["caller"], $c));
+        $this["cli"] = (fn(PimpleContainer $c): \Emeset\Cli\Cli => new \Emeset\Cli\Cli($c["cli.parser"], $c["cli.output"], $c["caller"], $c));
 
-        $this["cli.parser"] = (fn($c): \Emeset\Cli\Parser => new \Emeset\Cli\Parser($_SERVER["argv"], $c["cli.garden"]));
+        $this["cli.parser"] = (fn(PimpleContainer $c): \Emeset\Cli\Parser => new \Emeset\Cli\Parser($_SERVER["argv"], $c["cli.garden"]));
 
-        $this["cli.output"] = (fn($c): \Emeset\Cli\Output => new \Emeset\Cli\Output($c["cli.Climate"]));
+        $this["cli.output"] = (fn(PimpleContainer $c): \Emeset\Cli\Output => new \Emeset\Cli\Output($c["cli.Climate"]));
 
-        $this["cli.garden"] = (fn($c): \Garden\Cli\Cli => new \Garden\Cli\Cli());
+        $this["cli.garden"] = (fn(PimpleContainer $c): \Garden\Cli\Cli => new \Garden\Cli\Cli());
 
-        $this["cli.Climate"] = (fn($c): \League\CLImate\CLImate => new \League\CLImate\CLImate());
+        $this["cli.Climate"] = (fn(PimpleContainer $c): \League\CLImate\CLImate => new \League\CLImate\CLImate());
     }
 
     /**
@@ -96,7 +96,7 @@ class Container extends PimpleContainer implements ContainerInterface
      *
      * @throws \Exception      when identifier not found   
      */
-    public function get($id)
+    public function get(string $id): mixed
     {
         if (!$this->offsetExists($id)) {
             throw new \Exception(sprintf('Identifier "%s" is not defined.', $id));
@@ -117,7 +117,7 @@ class Container extends PimpleContainer implements ContainerInterface
      *
      * @return boolean
      */
-    public function has($id)
+    public function has(string $id): bool
     {
         return $this->offsetExists($id);
     }

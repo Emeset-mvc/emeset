@@ -4,26 +4,26 @@ use Emeset\Contracts\Cli\Output as OutputInterface;
 
 final class OutputMock implements OutputInterface
 {
-    public function warning(string $message = "") {}
-    public function error(string $message = "") {}
-    public function success(string $message = "") {}
-    public function info(string $message = "") {}
-    public function echo(string $message = "") {}
-    public function table(array $data = []) {}
-    public function json(array $data) {}
-    public function br() {}
-    public function input(string $message, array $acceptable = [], $hint = false) {}
-    public function password(string $message = "") {}
-    public function confirm(string $message = "") {}
-    public function progress(int $total, string $message) {}
-    public function progressAdvance(int $advance, string $message = "") {}
-    public function clear() {}
-    public function backgroundRed() {}
-    public function backgroundGreen() {}
-    public function backgroundBlue() {}
-    public function backgroundYellow() {}
-    public function padding(int $length, $label, $result, $char = " ") {}
-    public function bold(string $message = "") {}
-    public function border(string $char = "*", int $length = 80) {}
-    public function collumns(array $data = [], $cols = 3) {}
+    public function warning(string $message = ""): static { return $this; }
+    public function error(string $message = ""): static { return $this; }
+    public function success(string $message = ""): static { return $this; }
+    public function info(string $message = ""): static { return $this; }
+    public function echo(string $message = ""): static { return $this; }
+    public function table(array $data = []): static { return $this; }
+    public function json(array $data): static { return $this; }
+    public function br(): static { return $this; }
+    public function input(string $message, array $acceptable = [], mixed $hint = false): string { return ""; }
+    public function password(string $message = ""): static { return $this; }
+    public function confirm(string $message = ""): bool { return false; }
+    public function progress(int $total, string $message): static { return $this; }
+    public function progressAdvance(int $advance, string $message = ""): static { return $this; }
+    public function clear(): static { return $this; }
+    public function backgroundRed(): static { return $this; }
+    public function backgroundGreen(): static { return $this; }
+    public function backgroundBlue(): static { return $this; }
+    public function backgroundYellow(): static { return $this; }
+    public function padding(int $length, mixed $label, mixed $result, string $char = " "): static { return $this; }
+    public function bold(string $message = ""): static { return $this; }
+    public function border(string $char = "*", int $length = 80): static { return $this; }
+    public function collumns(array $data = [], int $cols = 3): static { return $this; }
 }

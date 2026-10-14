@@ -25,11 +25,11 @@ interface Router
 
     public const DEFAULT_ROUTE = 0;
 
-    public function route($id, $callback, $middleware = false);
-    public function execute(Request $request, Response $response);
-    public function get($id, $callback, $middleware = false);
-    public function post($id, $callback, $middleware = false);
-    public function put($id, $callback, $middleware = false);
-    public function delete($id, $callback, $middleware = false);
-    public function head($id, $callback, $middleware = false);
+    public function route(string|int $id, mixed $callback, mixed $middleware = false): void;
+    public function execute(Request $request, Response $response): Response;
+    public function get(string|int $id, mixed $callback, mixed $middleware = false): void;
+    public function post(string|int $id, mixed $callback, mixed $middleware = false): void;
+    public function put(string|int $id, mixed $callback, mixed $middleware = false): void;
+    public function delete(string|int $id, mixed $callback, mixed $middleware = false): void;
+    public function head(string|int $id, mixed $callback, mixed $middleware = false): void;
 }

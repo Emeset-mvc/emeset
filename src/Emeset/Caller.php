@@ -19,7 +19,7 @@ class Caller
     /**
      * @param \Pimple\Container $container
      */
-    public function __construct(private $container)
+    public function __construct(private readonly \Pimple\Container $container)
     {
     }
 
@@ -36,7 +36,7 @@ class Caller
      * @throws \RuntimeException If the callable does not exist
      * @throws \RuntimeException If the callable is not resolvable
      */
-    public function resolve($toResolve)
+    public function resolve(callable|array|string $toResolve): callable
     {
         if (is_callable($toResolve) && !is_array($toResolve)) {
             return $toResolve;
@@ -64,7 +64,7 @@ class Caller
      *
      * @return array
      */
-    protected function parseCallable($toResolve)
+    protected function parseCallable(string $toResolve): array
     {
         if (preg_match(self::CALLABLE_PATTERN, $toResolve, $matches)) {
             return [$matches[1], $matches[2]];
@@ -84,7 +84,7 @@ class Caller
      *
      * @throws \RuntimeException if the callable does not exist
      */
-    protected function resolveCallable($class, $method)
+    protected function resolveCallable(string $class, string $method): callable
     {
         $class = ltrim($class, '\\');
         if ($this->container->has("\\" . $class)) {
@@ -103,7 +103,7 @@ class Caller
      *
      * @throws \RuntimeException if the callable is not resolvable
      */
-    protected function assertCallable($callable)
+    protected function assertCallable(mixed $callable): void
     {
         if (!is_callable($callable)) {
             throw new \Exception(sprintf(
