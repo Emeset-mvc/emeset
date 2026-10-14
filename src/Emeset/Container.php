@@ -64,49 +64,27 @@ class Container extends PimpleContainer implements ContainerInterface
         $this["config"] = $config;
 
 
-        $this["request"] = function ($c) {
-            return new \Emeset\Http\Request();
-        };
+        $this["request"] = (fn($c): \Emeset\Http\Request => new \Emeset\Http\Request());
 
-        $this["view"] = function ($c) {
-            return new \Emeset\Views\ViewsPHP();
-        };
+        $this["view"] = (fn($c): \Emeset\Views\ViewsPHP => new \Emeset\Views\ViewsPHP());
 
-        $this["response"] = function ($c) {
-            return new \Emeset\Http\Response($c["view"]);
-        };
+        $this["response"] = (fn($c): \Emeset\Http\Response => new \Emeset\Http\Response($c["view"]));
 
-        $this["router"] = function ($c) {
-            return new \Emeset\Routers\RouterHttp($c, $c["config"]);
-        };
+        $this["router"] = (fn($c): \Emeset\Routers\RouterHttp => new \Emeset\Routers\RouterHttp($c, $c["config"]));
 
-        $this["FrontController"] = function ($c) {
-            return new \Emeset\FrontController($c);
-        };
+        $this["FrontController"] = (fn($c): \Emeset\FrontController => new \Emeset\FrontController($c));
 
-        $this["caller"] = function ($c) {
-            return new \Emeset\Caller($c);
-        };
+        $this["caller"] = (fn($c): \Emeset\Caller => new \Emeset\Caller($c));
 
-        $this["cli"] = function ($c) {
-            return new \Emeset\Cli\Cli($c["cli.parser"], $c["cli.output"], $c["caller"], $c);
-        };
+        $this["cli"] = (fn($c): \Emeset\Cli\Cli => new \Emeset\Cli\Cli($c["cli.parser"], $c["cli.output"], $c["caller"], $c));
 
-        $this["cli.parser"] = function ($c) {
-            return new \Emeset\Cli\Parser($_SERVER["argv"], $c["cli.garden"]);
-        };
+        $this["cli.parser"] = (fn($c): \Emeset\Cli\Parser => new \Emeset\Cli\Parser($_SERVER["argv"], $c["cli.garden"]));
 
-        $this["cli.output"] = function ($c) {
-            return new \Emeset\Cli\Output($c["cli.Climate"]);
-        };
+        $this["cli.output"] = (fn($c): \Emeset\Cli\Output => new \Emeset\Cli\Output($c["cli.Climate"]));
 
-        $this["cli.garden"] = function ($c) {
-            return new \Garden\Cli\Cli();
-        };
+        $this["cli.garden"] = (fn($c): \Garden\Cli\Cli => new \Garden\Cli\Cli());
 
-        $this["cli.Climate"] = function ($c) {
-            return new \League\CLImate\CLImate();
-        };
+        $this["cli.Climate"] = (fn($c): \League\CLImate\CLImate => new \League\CLImate\CLImate());
     }
 
     /**

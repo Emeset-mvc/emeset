@@ -25,17 +25,12 @@ use Emeset\Middleware;
 class RouterHttp implements \Emeset\Contracts\Routers\Router
 {
     public $routes = [];
-    public $config = [];
     public $router;
-    public $container;
     public $caller;
 
-    public function __construct($container, $config)
+    public function __construct(public $container, public $config)
     {
-        // Per ara no fa res
-        $this->config = $config;
-        $this->container = $container;
-        $this->caller = $container["caller"];
+        $this->caller = $this->container["caller"];
     }
 
     /**
@@ -139,7 +134,7 @@ class RouterHttp implements \Emeset\Contracts\Routers\Router
      */
     public function execute(Request $request,Response $response)
     {
-        $dispatcher = \FastRoute\simpleDispatcher(function (\FastRoute\RouteCollector $r) {
+        $dispatcher = \FastRoute\simpleDispatcher(function (\FastRoute\RouteCollector $r): void {
             foreach ($this->routes as $method => $routes) {
                 foreach ($routes as $route => $handler) {
                     if ($route !== 0) {
@@ -186,7 +181,7 @@ class RouterHttp implements \Emeset\Contracts\Routers\Router
                 $vars = $routeInfo[2];
                 $request->setParams($vars);
 
-                $action = array();
+                $action = [];
                 $call = $this->caller->resolve($handler[0]);
 
                 if ($handler[1]) {

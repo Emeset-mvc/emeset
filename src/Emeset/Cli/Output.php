@@ -6,11 +6,10 @@ use League\CLImate\CLImate;
 
 class Output implements \Emeset\Contracts\Cli\Output {
     
-        public ClImate $cli;
         public $progress;
     
-        public function __construct(Climate $cli) {
-            $this->cli = $cli;
+        public function __construct(public ClImate $cli)
+        {
         }
     
         public function warning(string $message = "") {

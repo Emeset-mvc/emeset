@@ -24,7 +24,6 @@ class ViewsPHP implements Views
 {
 
     public $values = [];
-    public $path;
     public $template = '';
 
     /**
@@ -32,9 +31,8 @@ class ViewsPHP implements Views
      *
      * @param $path string path fins a la carpeta de plantilles.
      **/
-    public function __construct($path = "../App/Views/")
+    public function __construct(public $path = "../App/Views/")
     {
-        $this->path = $path;
     }
 
     /**

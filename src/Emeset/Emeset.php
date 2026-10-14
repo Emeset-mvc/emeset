@@ -25,7 +25,7 @@ class Emeset
 
     public $contenidor;
     public $config = [];
-    public $constructor = null;
+    public $constructor;
     public $response;
     public $request;
 

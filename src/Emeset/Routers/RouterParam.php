@@ -26,17 +26,12 @@ use Exception;
 class RouterParam implements \Emeset\Contracts\Routers\Router
 {
     public $routes = [];
-    public $config = [];
-    public $container;
     public $caller;
 
 
-    public function __construct($container, $config)
+    public function __construct(public $container, public $config)
     {
-        // Per ara no fa res
-        $this->config = $config;
-        $this->container = $container;
-        $this->caller = $container["caller"];
+        $this->caller = $this->container["caller"];
     }
 
     /**
@@ -76,7 +71,7 @@ class RouterParam implements \Emeset\Contracts\Routers\Router
         }
 
 
-        $action = array();
+        $action = [];
         $call = $this->caller->resolve($controller[0]);
         if ($controller[1]) {
             // si té middleware definit l'executem 

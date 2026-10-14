@@ -6,12 +6,10 @@ namespace Emeset;
 class FrontController {
 
     public $router;
-    public $container;
 
-    public function __construct($container)
+    public function __construct(public $container)
     {
-        $this->container = $container;
-        $this->router = $container["router"];
+        $this->router = $this->container["router"];
     }
 
     public function route($id, $callback, $middleware = false)

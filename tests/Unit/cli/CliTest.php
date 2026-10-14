@@ -18,14 +18,12 @@ final class CliTest extends TestCase
         $_SERVER["argv"] = ["script", "hello"];
 
         $container = new \Emeset\Container([]);
-        $container["cli.output"] = function ($c) {
-            return new OutputMock();
-        };
+        $container["cli.output"] = (fn($c): \OutputMock => new OutputMock());
 
         $cli = $container["cli"];
         
 
-        $cli->addCommand('hello', function ($args, $out, $c) use (&$executed) {
+        $cli->addCommand('hello', function ($args, $out, $c) use (&$executed): void {
             $executed = true;
         }, 'Test command');
 

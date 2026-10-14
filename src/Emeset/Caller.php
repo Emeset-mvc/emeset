@@ -17,16 +17,10 @@ class Caller
     public const CALLABLE_PATTERN = '!^([^\:]+)\:([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)$!';
 
     /**
-     * @var \Pimple\Container
-     */
-    private $container;
-
-    /**
      * @param \Pimple\Container $container
      */
-    public function __construct($container)
+    public function __construct(private $container)
     {
-        $this->container = $container;
     }
 
     /**
@@ -55,7 +49,7 @@ class Caller
         }
 
         if (is_string($toResolve)) {
-            list($class, $method) = $this->parseCallable($toResolve);
+            [$class, $method] = $this->parseCallable($toResolve);
             $resolved = $this->resolveCallable($class, $method);
         }
 

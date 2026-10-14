@@ -3,15 +3,10 @@
 namespace Emeset\Cli;
 
 class Parser implements \Emeset\Contracts\Cli\Parser {
-    public \Garden\Cli\Cli $cli;
     public \Garden\Cli\Args $args;
 
-    public array $argv = [];
-
-    public function __construct($argv, \Garden\Cli\Cli $cli) {
-        $this->argv = $argv;
-        $this->cli = $cli;
-        
+    public function __construct(public array $argv, public \Garden\Cli\Cli $cli)
+    {
     }
 
     public function command($command, $description = ""){

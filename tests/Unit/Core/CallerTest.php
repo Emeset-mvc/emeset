@@ -13,9 +13,7 @@ final class CallerTest extends TestCase
         $container = new PimpleContainer([]);
         $caller = new Caller($container);
 
-        $callable = function () {
-            return 'ok';
-        };
+        $callable = (fn(): string => 'ok');
 
         $resolved = $caller->resolve($callable);
 

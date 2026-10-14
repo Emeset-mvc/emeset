@@ -25,9 +25,7 @@ final class EmesetTest extends TestCase
         $container = new Container([], $projectRoot);
 
         // Substituïm el router per RouterParam (més fàcil de provar)
-        $container['router'] = function ($c) {
-            return new RouterParam($c, $c['config']);
-        };
+        $container['router'] = (fn($c): \Emeset\Routers\RouterParam => new RouterParam($c, $c['config']));
 
         $app = new Emeset($container);
 

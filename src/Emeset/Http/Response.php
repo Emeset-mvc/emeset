@@ -91,7 +91,7 @@ class Response implements ResponseInterface
      */
     public function setCookie($name, $value = "", $expire = 0, $path = "", $domain = "", $secure = false, $httponly = false)
     {
-        setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
+        setcookie($name, $value, ['expires' => $expire, 'path' => $path, 'domain' => $domain, 'secure' => $secure, 'httponly' => $httponly]);
     }
 
     /**
